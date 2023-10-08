@@ -1,28 +1,32 @@
-import { login } from './user_module';
+
+import { SELECT} from '@/utils/database_module';
+const CryptoJS = require("crypto-js");
+
 
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    try {
-      const { email, password } = req.body;
-
-      if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
+  
+  const { email, password } = req.body;
+  const columnsToSelect = ['*'];
+  const conditions = [{
+    column: ' email',
+    operator: '=',
+    value: email
+  }];
+  try {
+      const users = await SELECT(`users`, columnsToSelect, conditions);
+      if (users.length === 1) {
+        const user = users[0];
+        const hashedPassword = CryptoJS.SHA256(password).toString();
+  
+        if (user.password === hashedPassword) {
+          return res.status(200).json({ user: user });
+        }
       }
-
-      const loginResult = await login(email, password);
-
-      if (loginResult.success) {
-       
-        return res.status(200).json({ user: loginResult.user });
-      } else {
-      
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
+     
+      return res.status(401).json({ error: 'invalid credentilas' });
     } catch (error) {
-      console.error('Error logging in:', error);
-      return res.status(500).json({ error: 'Unable to log in' });
+      console.error('Error logging in user:', error);
+      return { error: 'An error occurred while logging in' };
     }
-  } else {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+
 }

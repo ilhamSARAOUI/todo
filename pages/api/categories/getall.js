@@ -1,10 +1,15 @@
-import { getAllCategories} from './categories_module';
+import { SELECT} from '@/utils/database_module';
 
 
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
+  
+
+  const columnsToSelect = ['*'];
+  const conditions = [{
+  
+  }];
     try {
-      const categories = await getAllCategories();
+      const categories = await SELECT(`categories`, columnsToSelect, null);
       return res.status(200).json(categories);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -12,9 +17,5 @@ export default async function handler(req, res) {
         error: 'Unable to fetch categories'
       });
     }
-  } else {
-    res.status(405).json({
-      error: 'Method not allowed'
-    });
-  }
+
 }

@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useCategories } from "./categoriesProvider";
 import { useSession } from "next-auth/react";
+import { FETCH } from "@/utils/fetch";
 
 export default function TaskDialog({ task, togglepopup, setTasks }) {
   const session = useSession();
-  console.log("session dialog",session);
   const user_id = session.data.token.sub ?? -1 ;
   const { categories } = useCategories();
   const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ export default function TaskDialog({ task, togglepopup, setTasks }) {
         dueDate: task.dueDate,
         time: task.time,
         category_id: task.category_id,
-        state: task.state,
+        state: "task.state",
       });
     }
   }, [task]);
@@ -52,16 +52,10 @@ export default function TaskDialog({ task, togglepopup, setTasks }) {
       state: "to-do",
     };
 
-    const response = await fetch("http://localhost:3000/api/task/add/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(taskData),
-    });
+    const response = await FETCH("POST",taskData,`${process.env.NEXT_PUBLIC_BASE_URL}/api/task/add/`);
 
-    if (response.ok) {
-      const tasksResponse = await fetch(`http://localhost:3000/api/task/getall/${user_id}`);
+    if (response.status == 200) {
+      const tasksResponse = await FETCH("",null,`${process.env.NEXT_PUBLIC_BASE_URL}/api/task/getall/${user_id}`);
       const data = await tasksResponse.json();
       setTasks(data);
       console.log("Task added successfully", formData);
@@ -71,6 +65,7 @@ export default function TaskDialog({ task, togglepopup, setTasks }) {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const taskData = {
@@ -79,19 +74,13 @@ export default function TaskDialog({ task, togglepopup, setTasks }) {
       dueDate: formData.dueDate,
       time: formData.time,
       category_id: formData.category_id,
-      state: "to-do",
+      state:task.state
     };
 
-    const response = await fetch(`http://localhost:3000/api/task/update/${formData.id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(taskData),
-    });
+    const response = await FETCH("POST",taskData,`${process.env.NEXT_PUBLIC_BASE_URL}/api/task/update/${formData.id}`);
 
     if (response.ok) {
-      const tasksResponse = await fetch(`http://localhost:3000/api/task/getall/${user_id}`);
+      const tasksResponse = await FETCH("",null,`${process.env.NEXT_PUBLIC_BASE_URL}/api/task/getall/${user_id}`);
       const data = await tasksResponse.json();
       setTasks(data);
       console.log("Task updated successfully", formData);

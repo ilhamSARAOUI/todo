@@ -27,11 +27,7 @@ function Login() {
       <div className="login-form">
         <div>
           <h1>Login</h1>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
+   
           <div className="input">
             <input
               placeholder="Email"
@@ -62,14 +58,8 @@ function Login() {
           <div className="input">
             <button onClick={handleLogin}>Login</button>
           </div>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <center id="no-account">
+
+          <center className="no-account">
             You don't have an account?
             <Link href="/signup">Sign up</Link>
           </center>

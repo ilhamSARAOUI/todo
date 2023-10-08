@@ -1,0 +1,2 @@
+- Add a validate API call function that handles : Method, required parameters, mandatory login
+- Add snackbar on signup, and redirect automatically to next page

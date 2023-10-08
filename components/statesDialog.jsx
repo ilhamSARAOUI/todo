@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
+import { FETCH } from "@/utils/fetch";
 
 const states = ["to-do", "Pending", "Cancelled", "Done"];
 
 function StatesDialog({ task, togglepopup ,setTasks}) {
   const session = useSession();
-  console.log("session dialog",session);
   const user_id = session.data.token.sub ?? -1 ;
-  const [selectedState, setSelectedState] = useState("");
+  const [selectedState, setSelectedState] = useState(""); 
 
   const handleSubmit = async () => {
     const taskk = {
@@ -19,17 +19,8 @@ function StatesDialog({ task, togglepopup ,setTasks}) {
       state: selectedState,
     };
 
-    const response = await fetch(
-      `http://localhost:3000/api/task/update/${task.id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(taskk),
-      }
-    );
-    const tasks = await fetch(`http://localhost:3000/api/task/getall/${user_id}`);
+    const response = await FETCH("POST",taskk,`${process.env.NEXT_PUBLIC_BASE_URL}/api/task/update/${task.id}` );
+    const tasks = await FETCH("", null,`${process.env.NEXT_PUBLIC_BASE_URL}/api/task/getall/${user_id}`);
     const data = await tasks.json();
     setTasks(data);
     console.log("Task updated successfully");

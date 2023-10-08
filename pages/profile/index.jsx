@@ -7,10 +7,10 @@ import { BiEditAlt } from "react-icons/bi";
 import SideNavBar from "@/components/sideNavBar";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { FETCH } from "@/utils/fetch";
 
 function Profile() {
   const session = useSession();
-  console.log("profile", session);
   var user_id = -1;
   const isUserLoggedIn = session.data != null;
   if (session.data != null) {
@@ -28,15 +28,8 @@ function Profile() {
   const saveChanges = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(
-      `http://localhost:3000/api/user/update/${user.id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editedUser),
-      }
+    const response = await FETCH("POST",editedUser,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/update/${user.id}`
     );
     setEditable(false);
     setUser(editedUser);
@@ -45,15 +38,11 @@ function Profile() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/user/get/${user_id}`
-        );
-        // const response = await fetch(`http://localhost:3000/api/user/get/60`);
+        const response = await FETCH("",null, `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/get/${user_id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch user");
         }
         const data = await response.json();
-        // console.log(data);
         setUser(data);
         setEditedUser(data);
       } catch (error) {

@@ -3,8 +3,10 @@ import Link from "next/link";
 import { MdOutlineVisibilityOff } from "react-icons/md";
 import { MdOutlineVisibility } from "react-icons/md";
 import CryptoJS from "crypto-js";
+import { FETCH } from "@/utils/fetch";
 
 function SignUp() {
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [signedUp, setSignedUp] = useState(false);
@@ -17,13 +19,16 @@ function SignUp() {
     password: "",
   });
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
   const handleSubmit = async (e) => {
     setEmailError(false);
     e.preventDefault();
@@ -37,13 +42,7 @@ function SignUp() {
       password: hashedPassword,
     };
     try {
-      const response = await fetch(`http://localhost:3000/api/user/signup/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
+      const response = await FETCH("POST",user,`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/signup/`);
       console.log("status",response.status);
      
       const data = await response.json();
@@ -66,7 +65,7 @@ function SignUp() {
   return (
     <div className="login-form">
       <div>
-      <center> <h1>SignUp</h1></center> 
+        <center> <h1>SignUp</h1></center> 
         <br />
         <form onSubmit={handleSubmit}>
           <div className="input">
@@ -129,12 +128,14 @@ function SignUp() {
             <button type="submit">SignUp</button>
           </div>
           <br />
-          {signedUp && !emailError && (
-            <div>
-              Your account has been successfully created.{" "}
-              <Link href={"/login"}>Login</Link>
-            </div>
-          )}
+          {
+          signedUp && !emailError && (
+            <center> <div className="no-account">
+                Account created.{" "} 
+                <Link href={"/login"}>Login</Link>
+              </div></center> 
+          )
+          }
         </form>
       </div>
     </div>

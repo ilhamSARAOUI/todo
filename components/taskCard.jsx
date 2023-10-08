@@ -3,7 +3,7 @@
 import { BiEditAlt } from "react-icons/bi";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useState } from "react";
-import TaskDialog from "./TaskDialog";
+import TaskDialog from "./taskDialog";
 import DeletetaskDialog from "./DeletetaskDialog";
 import { useCategories } from "./categoriesProvider";
 import StatesDialog from "./statesDialog";

@@ -22,7 +22,7 @@ function Categories() {
       <SideNavBar />
 
       <div className="content">
-        <div className="header">
+        <div className="header" >
           <h1>
             {" "}
             <MdOutlineCategory className="icon" />{" "}
@@ -48,13 +48,13 @@ function Categories() {
             <CategoryCard key={category.id} category={category} />
           ))}
         </div>
-        {isUserLoggedIn ? (
+        {isUserLoggedIn ? 
           <button className="fixedButton" onClick={togglepopup}>
             +
           </button>
-        ) : (
+         : 
           <div></div>
-        )}
+        }
         {isOpen && (
           <CategoryForm
             togglepopup={togglepopup}
@@ -65,5 +65,13 @@ function Categories() {
     </div>
   );
 }
+
+
+export const ConditionalComponent = (condition, component1, component2) => {
+  if(condition) return component1; 
+  return component2;
+
+}
+
 
 export default Categories;

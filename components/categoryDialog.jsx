@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-
+import { FETCH } from "@/utils/fetch";
 function CategoryForm({ togglepopup, setCategories }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -9,21 +9,15 @@ function CategoryForm({ togglepopup, setCategories }) {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const category = {
       name: formData.name,
     };
-    const response = await fetch(`http://localhost:3000/api/categories/add/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(category),
-    });
+    const response = await FETCH ("POST",category,`${process.env.NEXT_PUBLIC_BASE_URL}/api/categories/add/`);
     const data = await response.json();
     setCategories(data);
-    console.log(data);
     togglepopup();
   };
 

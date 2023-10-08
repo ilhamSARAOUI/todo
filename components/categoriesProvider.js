@@ -1,4 +1,5 @@
 
+import { FETCH } from "@/utils/fetch";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CategoriesContext = createContext();
@@ -9,14 +10,14 @@ export const CategoriesProvider = ({ children }) => {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const response = await fetch("http://localhost:3000/api/categories/getall");
+        const response = await FETCH("",null,`${process.env.NEXT_PUBLIC_BASE_URL}/api/categories/getall`);
         if (!response.ok) {
-          throw new Error("Failed to fetch categories");
+          throw new Error(`Failed to fetch categories`);
         }
         const data = await response.json();
         setCategories(data);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error(`Error fetching categories:`, error);
       }
     }
 
@@ -33,7 +34,7 @@ export const CategoriesProvider = ({ children }) => {
 export const useCategories = () => {
   const context = useContext(CategoriesContext);
   if (!context) {
-    throw new Error("useCategories must be used within a CategoriesProvider");
+    throw new Error(`useCategories must be used within a CategoriesProvider`);
   }
   return context;
 };

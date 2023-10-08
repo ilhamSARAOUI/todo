@@ -41,7 +41,7 @@ const SideNavBar = () => {
               <BsPerson className="icon" /> Profile
             </Link>
           </li>
-          {session.data ? (
+          {session.data!=null ? (
             <li onClick={handleLogout}>
               <CiLogout className="icon" /> Logout
             </li>
